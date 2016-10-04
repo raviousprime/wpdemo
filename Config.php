@@ -8,6 +8,6 @@ namespace WPDemo;
         public $uploadDir       = 'wp-content/uploads';
         public $cloneDir        = 'wp-content';
         public $lifetime        = 15; //Instance lifetime, in minutes
-        public $limit           = 10; //Max instances
+        public $limit           = 50; //Max instances
     }
 
