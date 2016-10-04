@@ -40,3 +40,13 @@ register_deactivation_hook(__FILE__, function() {
 });
 
 (new WPDemo\Manager(new \WPDemo\Config()))->init();
+
+function new_nav_menu_items( $items ) {
+	
+    $homelink = '<li class="home"><a href="' . home_url( 'wp-login.php?user=demo' ) . '">' . __( '<b>Try Demo</b>', 'wpdemo' ) . '</a></li>';
+    
+    $items = $items . $homelink;
+    
+    return $items;
+}
+add_filter( 'wp_nav_menu_items', 'new_nav_menu_items' );
