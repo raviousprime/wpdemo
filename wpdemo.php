@@ -50,3 +50,9 @@ function new_nav_menu_items( $items ) {
     return $items;
 }
 add_filter( 'wp_nav_menu_items', 'new_nav_menu_items' );
+
+function buddydev_customize_login_message( $message ) {
+	$message = "Use username: <b>demo</b> and password <b>demo</b>";
+	return $message;
+}
+add_filter( 'login_message', 'buddydev_customize_login_message' );
