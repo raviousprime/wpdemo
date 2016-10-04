@@ -61,14 +61,19 @@ namespace WPDemo;
         public function instantiateSession()
         {
             //Do not create a new instance if we're already at the limit
-            if ($this->countInstances() >= $this->getConfig()->limit)
+            if ($this->countInstances() >= $this->getConfig()->limit) {
                 throw new \Exception('Could not create a new demo, too many demos are already running.');
-
-            //Grab the instance
-            $instance = $this->hasInstance() === true? 
-                new Instance( $this->getPDO(), $this->getConfig(), $_SESSION['instanceID']) : 
-                new Instance( $this->getPDO(), $this->getConfig() );
-
+            }
+			
+            if ( $this->hasInstance() === true ) {
+                $instance = new Instance( $this->getPDO(), $this->getConfig(), $_SESSION['instanceID'] );
+            } elseif( isset( $_GET['user'] ) && $_GET['user'] == 'demo' ) {
+                $instance = new Instance( $this->getPDO(), $this->getConfig() );
+                mail('admin@buddydev.com', 'New demo instance', 'A new demo instance has been created' );
+            } else {
+                return;
+            }
+            
             //Set the WP globals
             $GLOBALS['table_prefix'] = $instance->tablePrefix;
             $_SESSION['instanceID']  = $instance->id;
