@@ -34,11 +34,13 @@ namespace WPDemo;
          */
         public static function hasPermissions()
         {
-            $sql       = "SHOW GRANTS for test;";
+            $user      = DB_USER . '@' . DB_HOST;
+            $sql       = "SHOW GRANTS for {$user};"; 
             $generator = new Generator();
             $pdo       = $generator->getPDO();
             $query     = $pdo->query($sql);
-            $results   = array_pop(($query->fetch(\PDO::FETCH_NUM)));
+            $sec_query  = $query->fetch(\PDO::FETCH_NUM);
+            $results   = array_pop( $sec_query );
 
             return 
                 strpos($results, 'GRANT ALL PRIVILEGES ON') !== false || 
