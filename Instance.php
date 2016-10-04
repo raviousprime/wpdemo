@@ -17,19 +17,43 @@ namespace WPDemo;
             $this->pdo = $pdo;
 
             if ($id === null) {
-                $this->id          = $this->generateRandomString();
-                $this->tablePrefix = $config->instancePrefix . $this->id . '_';
-                $this->uploadDir   = $config->cloneDir . '/' . $config->instancePrefix . $this->id;
-
-                $this->importTables($config->defaultPrefix, $this->tablePrefix);
-                $this->cloneUploadsDirectory($config->uploadDir, $this->uploadDir);
+               $this->clone_tables_dir( $config );
             } else {
-                $this->id          = $id;
-                $this->tablePrefix = $config->instancePrefix . $this->id . '_';
-                $this->uploadDir   = $config->cloneDir . '/' . $config->instancePrefix . $this->id;
+                $prefix = $config->instancePrefix . $id . '_';
+                if ( $this->is_table_exits( $prefix ) ) {
+					$this->id  		   = $id;	
+					$this->tablePrefix = $prefix;
+					$this->uploadDir   = $config->cloneDir . '/' . $config->instancePrefix . $this->id;
+				} else {
+					$this->clone_tables_dir($config);
+				}	
             }
         }
 
+		 public function clone_tables_dir( $config ){
+			
+			 $this->id          = $this->generateRandomString();
+             $this->tablePrefix = $config->instancePrefix . $this->id . '_';
+             $this->uploadDir   = $config->cloneDir . '/' . $config->instancePrefix . $this->id;
+
+             $this->importTables($config->defaultPrefix, $this->tablePrefix);
+             $this->cloneUploadsDirectory($config->uploadDir, $this->uploadDir);
+		}
+		
+		public function is_table_exits( $prefix ) {
+			
+			$pdo = $this->pdo;
+					
+			$table = $prefix.'options';
+			
+			$query = "SELECT * FROM ".$table;
+			
+			$is_table = $pdo->query("SHOW TABLES LIKE '".$table."'");
+			
+			return $is_table->rowCount();	
+				
+		}
+		
         /**
          * Generates a random string.
          * @param int $size Number of characers in the string.
